@@ -1,18 +1,7 @@
-
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author gabriel
- */
 public class Player extends JLabel{
     public int x = 0, y = 0;    
     ImageIcon walkL;

@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import com.bertolozi.Server.Player;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
