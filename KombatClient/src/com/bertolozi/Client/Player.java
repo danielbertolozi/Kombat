@@ -1,3 +1,5 @@
+package com.bertolozi.Client;
+
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -10,8 +12,8 @@ public class Player extends JLabel{
     ImageIcon walkD;
     public void setup(){
         setText("12");
-        walkR = new ImageIcon(new ImageIcon(getClass().getResource("walk_r.gif")).getImage().getScaledInstance(88, 127, Image.SCALE_DEFAULT));
-        walkL = new ImageIcon(new ImageIcon(getClass().getResource("walk_l.gif")).getImage().getScaledInstance(88, 127, Image.SCALE_DEFAULT));
+        walkR = new ImageIcon(new ImageIcon(getClass().getResource("/Players/walk_r.gif")).getImage().getScaledInstance(88, 127, Image.SCALE_DEFAULT));
+        walkL = new ImageIcon(new ImageIcon(getClass().getResource("/Players/walk_l.gif")).getImage().getScaledInstance(88, 127, Image.SCALE_DEFAULT));
         setBounds(x, y, 90, 127);
         setIcon(walkR);
     }

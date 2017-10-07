@@ -1,10 +1,10 @@
+package com.bertolozi.Server;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import com.bertolozi.Server.Player;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -16,14 +16,14 @@ import com.bertolozi.Server.Player;
  *
  * @author gabriel
  */
-public class KombatServerExec implements Runnable{    
+public class Server implements Runnable{
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         // TODO code application logic here
         System.out.println("Starting...");
-        KombatServerExec kse = new KombatServerExec();
+        Server kse = new Server();
         kse.waitForPlayer();        
     }
     
