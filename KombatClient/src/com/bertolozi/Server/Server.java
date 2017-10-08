@@ -31,6 +31,26 @@ public class Server implements Runnable {
                     out.println(player.x + "_" + player.y + "_"
                             + player.w + "" + player.h);
                 }
+                if (btL) {
+                    player.x -= SPEED;
+                    out.println(player.x + "_" + player.y + "_"
+                            + player.w + "" + player.h);
+                }
+                if (btL) {
+                    player.x -= SPEED;
+                    out.println(player.x + "_" + player.y + "_"
+                            + player.w + "" + player.h);
+                }
+                if (btD) {
+                    player.y += SPEED;
+                    out.println(player.x + "_" + player.y + "_"
+                            + player.w + "" + player.h);
+                }
+                if (btU) {
+                    player.y -= SPEED;
+                    out.println(player.x + "_" + player.y + "_"
+                            + player.w + "" + player.h);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,9 +73,26 @@ public class Server implements Runnable {
                 if (command.equals("PR_R")) {
                     btR = true;
                 }
-
                 if (command.equals("RE_R")) {
                     btR = false;
+                }
+                if (command.equals("PR_L")) {
+                    btL = true;
+                }
+                if (command.equals("RE_L")) {
+                    btL = false;
+                }
+                if (command.equals("PR_U")) {
+                    btU = true;
+                }
+                if (command.equals("RE_U")) {
+                    btU = false;
+                }
+                if (command.equals("PR_D")) {
+                    btD = true;
+                }
+                if (command.equals("RE_D")) {
+                    btD = false;
                 }
             }
         } catch (Exception e) {
