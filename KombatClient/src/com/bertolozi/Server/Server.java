@@ -1,5 +1,7 @@
 package com.bertolozi.Server;
 
+import com.bertolozi.Player.ServerAgent;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -8,7 +10,7 @@ import java.net.Socket;
 
 public class Server implements Runnable {
     public static final int SPEED = 8;
-    public Player player;
+    public ServerAgent player;
     boolean btR = false;
     boolean btL = false;
     boolean btU = false;
@@ -59,7 +61,7 @@ public class Server implements Runnable {
 
     public void waitForPlayer() {
         try {
-            player = new Player();
+            player = new ServerAgent();
             ServerSocket ss = new ServerSocket(8880);
             Socket s = ss.accept();
             BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));

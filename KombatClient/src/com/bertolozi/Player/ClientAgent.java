@@ -1,10 +1,10 @@
-package com.bertolozi.Client;
+package com.bertolozi.Player;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-public class Player extends JLabel {
+public class ClientAgent extends JLabel {
     private int x = 0;
     private int y = 0;
     ImageIcon walkLeft;

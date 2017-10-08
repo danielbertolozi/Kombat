@@ -1,40 +1,28 @@
 package com.bertolozi.Client;
 
+import com.bertolozi.Player.ClientAgent;
+import com.bertolozi.Player.KeypressTranslator;
+
+import javax.swing.*;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.HashMap;
+
+import static java.awt.EventQueue.invokeLater;
+import static javax.swing.UIManager.getInstalledLookAndFeels;
 
 public class KombatMainForm extends javax.swing.JFrame implements Runnable {
     Thread gameFlowThread;
-    Player player;
+    ClientAgent player;
     Socket s;
     BufferedReader in;
     PrintWriter out;
-    private HashMap<Integer, String> pressKeymap = new HashMap<>();
-    private HashMap<Integer, String> releaseKeymap = new HashMap<>();
 
     public KombatMainForm() {
         initComponents();
-        initPressKeymap();
-        initReleaseKeymap();
-    }
-
-    private void initPressKeymap() {
-        pressKeymap.put(KeyEvent.VK_RIGHT, "PR_R");
-        pressKeymap.put(KeyEvent.VK_LEFT, "PR_L");
-        pressKeymap.put(KeyEvent.VK_UP, "PR_U");
-        pressKeymap.put(KeyEvent.VK_DOWN, "PR_D");
-    }
-
-    private void initReleaseKeymap() {
-        releaseKeymap.put(KeyEvent.VK_RIGHT, "RE_R");
-        releaseKeymap.put(KeyEvent.VK_LEFT, "RE_L");
-        releaseKeymap.put(KeyEvent.VK_UP, "RE_U");
-        releaseKeymap.put(KeyEvent.VK_DOWN, "RE_D");
     }
 
     @SuppressWarnings("unchecked")
@@ -69,7 +57,7 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
     }
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {
-        player = new Player();
+        player = new ClientAgent();
         player.setup();
         getContentPane().add(player);
         connect();
@@ -105,14 +93,14 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
     }
 
     private void formKeyPressed(KeyEvent evt) {
-        String code = this.pressKeymap.get(evt.getKeyCode());
+        String code = KeypressTranslator.translatePressEvent(evt.getKeyCode());
         if (code != null) {
             out.println(code);
         }
     }
 
     private void formKeyReleased(KeyEvent evt) {
-        String code = this.releaseKeymap.get(evt.getKeyCode());
+        String code = KeypressTranslator.translateReleaseEvent(evt.getKeyCode());
         if (code != null) {
             out.println(code);
         }
