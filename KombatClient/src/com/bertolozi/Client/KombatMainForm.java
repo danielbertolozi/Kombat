@@ -6,11 +6,35 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class KombatMainForm extends javax.swing.JFrame implements Runnable {
+    Thread gameFlowThread;
+    Player player;
+    Socket s;
+    BufferedReader in;
+    PrintWriter out;
+    private HashMap<Integer, String> pressKeymap = new HashMap<>();
+    private HashMap<Integer, String> releaseKeymap = new HashMap<>();
 
     public KombatMainForm() {
         initComponents();
+        initPressKeymap();
+        initReleaseKeymap();
+    }
+
+    private void initPressKeymap() {
+        pressKeymap.put(KeyEvent.VK_RIGHT, "PR_R");
+        pressKeymap.put(KeyEvent.VK_LEFT, "PR_L");
+        pressKeymap.put(KeyEvent.VK_UP, "PR_U");
+        pressKeymap.put(KeyEvent.VK_DOWN, "PR_D");
+    }
+
+    private void initReleaseKeymap() {
+        releaseKeymap.put(KeyEvent.VK_RIGHT, "RE_R");
+        releaseKeymap.put(KeyEvent.VK_LEFT, "RE_L");
+        releaseKeymap.put(KeyEvent.VK_UP, "RE_U");
+        releaseKeymap.put(KeyEvent.VK_DOWN, "RE_D");
     }
 
     @SuppressWarnings("unchecked")
@@ -22,10 +46,11 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
             }
         });
         addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
+            public void keyPressed(KeyEvent evt) {
                 formKeyPressed(evt);
             }
-            public void keyReleased(java.awt.event.KeyEvent evt) {
+
+            public void keyReleased(KeyEvent evt) {
                 formKeyReleased(evt);
             }
         });
@@ -80,16 +105,17 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
         }
     }
 
-    private void formKeyPressed(java.awt.event.KeyEvent evt) {
-        if (evt.getKeyCode() == KeyEvent.VK_RIGHT) {
-            out.println("PR_R");
+    private void formKeyPressed(KeyEvent evt) {
+        String code = this.pressKeymap.get(evt.getKeyCode());
+        if (code != null) {
+            out.println(code);
         }
     }
 
-    private void formKeyReleased(java.awt.event.KeyEvent evt) {
-        if (evt.getKeyCode() == KeyEvent.VK_RIGHT) {
-            key_r = false;
-            out.println("RE_R");
+    private void formKeyReleased(KeyEvent evt) {
+        String code = this.releaseKeymap.get(evt.getKeyCode());
+        if (code != null) {
+            out.println(code);
         }
     }
 
@@ -127,11 +153,4 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
             }
         });
     }
-    
-    Thread gameFlowThread;
-    Player player;
-    Socket s;
-    BufferedReader in;
-    PrintWriter out;
-    boolean key_r = false;
 }
