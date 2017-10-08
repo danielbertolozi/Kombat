@@ -58,46 +58,45 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 800, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 600, Short.MAX_VALUE)
         );
-
         pack();
     }
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {
         player = new Player();
         player.setup();
-        getContentPane().add(player);        
+        getContentPane().add(player);
         connect();
         repaint();
         gameFlowThread = new Thread(this);
         gameFlowThread.start();
     }
 
-    public void connect(){
+    public void connect() {
         try {
-            s   = new Socket("localhost",8880);
-            in  = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            out = new PrintWriter(s.getOutputStream(),true);
+            s = new Socket("localhost", 8880);
+            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out = new PrintWriter(s.getOutputStream(), true);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     public void gameFlow() {
         String command;
         try {
             while (true) {
                 command = in.readLine();
                 String data[] = command.split("\\_");
-                player.x = Integer.parseInt(data[0]);
-                player.y = Integer.parseInt(data[1]);
-                player.move();
+                int x = Integer.parseInt(data[0]);
+                int y = Integer.parseInt(data[1]);
+                player.move(x, y);
             }
         } catch (Exception e) {
             e.printStackTrace();
