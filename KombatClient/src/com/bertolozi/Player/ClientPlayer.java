@@ -26,12 +26,6 @@ public class ClientPlayer extends JLabel {
         setBounds(this.x, this.y, 90, 127);
     }
 
-    public void moveX(int x) {
-        setPlayerDirection(x);
-        this.x = x;
-        this.move();
-    }
-
     private void setPlayerDirection(int x) {
         if (this.x == x) {
             return;
@@ -42,11 +36,6 @@ public class ClientPlayer extends JLabel {
         else {
             setIconRight();
         }
-    }
-
-    public void moveY(int y) {
-        this.y = y;
-        this.move();
     }
 
     public void move(int x, int y) {
