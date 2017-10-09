@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
+    private int[] ports = new int[] {8880, 8881};
     public static void main(String[] args) {
         System.out.println("Starting...");
         Server server = new Server();
@@ -16,18 +17,22 @@ public class Server {
     }
 
     public void waitForPlayer() {
-        try {
-            ServerPlayer player = new ServerPlayer();
-            ServerSocket ss = new ServerSocket(8880);
-            Socket s = ss.accept();
-            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            PrintWriter out = new PrintWriter(s.getOutputStream(), true);
-            Runnable runnable = player.getPlayerActionsHandler(player, in, out);
-            Thread th = new Thread(runnable);
-            th.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+        int playerCount = 0;
+        while (playerCount < 2) {
+            try {
+                ServerPlayer player = new ServerPlayer();
+                ServerSocket ss = new ServerSocket(ports[playerCount]);
+                Socket s = ss.accept();
+                BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+                Runnable runnable = player.getPlayerActionsHandler(player, in, out);
+                Thread th = new Thread(runnable);
+                th.start();
+                playerCount++;
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
         }
     }
 }

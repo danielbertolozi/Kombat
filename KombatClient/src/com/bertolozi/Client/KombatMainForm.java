@@ -21,8 +21,10 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
     Socket s;
     BufferedReader in;
     PrintWriter out;
+    int port = 8880;
 
-    public KombatMainForm() {
+    public KombatMainForm(int port) {
+        this.port = port != 0 ? port : this.port;
         initComponents();
     }
 
@@ -69,7 +71,7 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
 
     public void connect() {
         try {
-            s = new Socket("localhost", 8880);
+            s = new Socket("localhost", port);
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
             out = new PrintWriter(s.getOutputStream(), true);
         } catch (Exception e) {
@@ -125,7 +127,11 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
                 break;
             }
         }
-
-        invokeLater(() -> new KombatMainForm().setVisible(true));
+        int port = 0;
+        if (args.length != 0 && args[0] == "-p") {
+            port = Integer.parseInt(args[1]);
+        }
+        int finalPort = port;
+        invokeLater(() -> new KombatMainForm(finalPort).setVisible(true));
     }
 }
