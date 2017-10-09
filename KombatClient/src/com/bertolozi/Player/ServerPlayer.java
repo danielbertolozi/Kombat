@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class ServerAgent {
+public class ServerPlayer {
     public int x = 0;
     public int y = 0;
     public int w = 90;
@@ -19,7 +19,7 @@ public class ServerAgent {
         return;
     }
 
-    public Runnable getPlayerHandle(ServerAgent player, BufferedReader in, PrintWriter out) {
+    public Runnable getPlayerHandle(ServerPlayer player, BufferedReader in, PrintWriter out) {
         Thread keymapLoop = new Thread(() -> {
             String command = "";
             try {

@@ -4,7 +4,7 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-public class ClientAgent extends JLabel {
+public class ClientPlayer extends JLabel {
     private int x = 0;
     private int y = 0;
     ImageIcon walkLeft;

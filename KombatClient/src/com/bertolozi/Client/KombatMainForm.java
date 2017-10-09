@@ -1,6 +1,6 @@
 package com.bertolozi.Client;
 
-import com.bertolozi.Player.ClientAgent;
+import com.bertolozi.Player.ClientPlayer;
 import com.bertolozi.Player.KeypressTranslator;
 
 import javax.swing.*;
@@ -16,7 +16,7 @@ import static javax.swing.UIManager.getInstalledLookAndFeels;
 
 public class KombatMainForm extends javax.swing.JFrame implements Runnable {
     Thread gameFlowThread;
-    ClientAgent player;
+    ClientPlayer player;
     Socket s;
     BufferedReader in;
     PrintWriter out;
@@ -57,7 +57,7 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
     }
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {
-        player = new ClientAgent();
+        player = new ClientPlayer();
         player.setup();
         getContentPane().add(player);
         connect();
