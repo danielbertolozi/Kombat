@@ -27,8 +27,21 @@ public class ClientPlayer extends JLabel {
     }
 
     public void moveX(int x) {
+        setPlayerDirection(x);
         this.x = x;
         this.move();
+    }
+
+    private void setPlayerDirection(int x) {
+        if (this.x == x) {
+            return;
+        }
+        if (this.x > x) {
+            setIconLeft();
+        }
+        else {
+            setIconRight();
+        }
     }
 
     public void moveY(int y) {
@@ -37,6 +50,7 @@ public class ClientPlayer extends JLabel {
     }
 
     public void move(int x, int y) {
+        setPlayerDirection(x);
         this.x = x;
         this.y = y;
         this.move();

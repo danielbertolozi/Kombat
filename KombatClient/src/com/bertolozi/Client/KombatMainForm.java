@@ -6,6 +6,7 @@ import com.bertolozi.Control.KeyTranslator;
 import javax.swing.*;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -56,7 +57,7 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
         pack();
     }
 
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {
+    private void formWindowOpened(WindowEvent evt) {
         player = new ClientPlayer();
         player.setup();
         getContentPane().add(player);
