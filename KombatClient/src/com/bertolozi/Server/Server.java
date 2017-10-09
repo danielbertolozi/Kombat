@@ -22,7 +22,7 @@ public class Server {
             Socket s = ss.accept();
             BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
             PrintWriter out = new PrintWriter(s.getOutputStream(), true);
-            Runnable runnable = player.getPlayerHandle(player, in, out);
+            Runnable runnable = player.getPlayerActionsHandler(player, in, out);
             Thread th = new Thread(runnable);
             th.start();
         } catch (Exception e) {

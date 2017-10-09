@@ -1,7 +1,7 @@
 package com.bertolozi.Client;
 
 import com.bertolozi.Player.ClientPlayer;
-import com.bertolozi.Player.KeypressTranslator;
+import com.bertolozi.Control.KeyTranslator;
 
 import javax.swing.*;
 import java.awt.Graphics;
@@ -93,14 +93,14 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
     }
 
     private void formKeyPressed(KeyEvent evt) {
-        String code = KeypressTranslator.translatePressEvent(evt.getKeyCode());
+        String code = KeyTranslator.translatePressEvent(evt.getKeyCode());
         if (code != null) {
             out.println(code);
         }
     }
 
     private void formKeyReleased(KeyEvent evt) {
-        String code = KeypressTranslator.translateReleaseEvent(evt.getKeyCode());
+        String code = KeyTranslator.translateReleaseEvent(evt.getKeyCode());
         if (code != null) {
             out.println(code);
         }

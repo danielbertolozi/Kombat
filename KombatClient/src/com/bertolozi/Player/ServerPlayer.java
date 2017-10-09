@@ -1,89 +1,83 @@
 package com.bertolozi.Player;
 
+import com.bertolozi.Control.KeyTranslator;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 
 public class ServerPlayer {
-    public int x = 0;
-    public int y = 0;
-    public int w = 90;
-    public int h = 127;
-    public boolean moveRight = false;
-    public boolean moveLeft = false;
-    public boolean moveUp = false;
-    public boolean moveDown = false;
-    public static final int SPEED = 8;
+    private int x = 0;
+    private int y = 0;
+    private int w = 90;
+    private int h = 127;
+    private static final int SPEED = 8;
+    private HashMap<String, Boolean> movementMap = new HashMap<String, Boolean>() {{
+        put("RIGHT", false);
+        put("LEFT", false);
+        put("UP", false);
+        put("DOWN", false);
+    }};
 
-    public void move() {
-        return;
+    private void move() {
+        if (movementMap.get("RIGHT")) {
+            x += SPEED;
+        }
+        if (movementMap.get("LEFT")) {
+            x -= SPEED;
+        }
+        if (movementMap.get("DOWN")) {
+            y += SPEED;
+        }
+        if (movementMap.get("UP")) {
+            y -= SPEED;
+        }
     }
 
-    public Runnable getPlayerHandle(ServerPlayer player, BufferedReader in, PrintWriter out) {
-        Thread keymapLoop = new Thread(() -> {
-            String command = "";
-            try {
-                while (!(command = in.readLine()).equals("exit")) {
-                    if (command.equals("PR_R")) {
-                        player.moveRight = true;
-                    }
-                    if (command.equals("RE_R")) {
-                        player.moveRight = false;
-                    }
-                    if (command.equals("PR_L")) {
-                        player.moveLeft = true;
-                    }
-                    if (command.equals("RE_L")) {
-                        player.moveLeft = false;
-                    }
-                    if (command.equals("PR_U")) {
-                        player.moveUp = true;
-                    }
-                    if (command.equals("RE_U")) {
-                        player.moveUp = false;
-                    }
-                    if (command.equals("PR_D")) {
-                        player.moveDown = true;
-                    }
-                    if (command.equals("RE_D")) {
-                        player.moveDown = false;
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-
+    public Runnable getPlayerActionsHandler(ServerPlayer player, BufferedReader in, PrintWriter out) {
         return () -> {
+            Thread keymapLoop = getKeymapListener(in);
             keymapLoop.start();
             try {
                 while (true) {
                     Thread.sleep(30);
                     player.move();
-                    if (player.moveRight) {
-                        player.x += SPEED;
-                        out.println(player.x + "_" + player.y + "_"
-                                + player.w + "" + player.h);
-                    }
-                    if (player.moveLeft) {
-                        player.x -= SPEED;
-                        out.println(player.x + "_" + player.y + "_"
-                                + player.w + "" + player.h);
-                    }
-                    if (player.moveDown) {
-                        player.y += SPEED;
-                        out.println(player.x + "_" + player.y + "_"
-                                + player.w + "" + player.h);
-                    }
-                    if (player.moveUp) {
-                        player.y -= SPEED;
-                        out.println(player.x + "_" + player.y + "_"
-                                + player.w + "" + player.h);
-                    }
+                    syncMovement(out);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         };
+    }
+
+    private Thread getKeymapListener(BufferedReader in) {
+        return new Thread(() -> {
+            String command;
+            try {
+                while (!(command = in.readLine()).equals("exit")) {
+                    evalCommand(command);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void evalCommand(String command) {
+        String direction = KeyTranslator.getDirectionForPress(command);
+        if (direction == null) {
+            direction = KeyTranslator.getDirectionForRelease(command);
+            if (direction != null) {
+                movementMap.put(direction, false);
+            }
+            return;
+        }
+        movementMap.put(direction, true);
+    }
+
+    private void syncMovement(PrintWriter out) {
+        out.println(x + "_" + y + "_"
+                + w + "" + h);
     }
 }
