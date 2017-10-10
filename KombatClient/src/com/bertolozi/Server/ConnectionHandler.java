@@ -11,6 +11,10 @@ public class ConnectionHandler {
     // TODO perhaps use something else than a hashmap for broadcasting?
     private static ConnectionHandler instance = new ConnectionHandler();
 
+    public ConnectionHandler() {
+        throw new ExceptionInInitializerError("This class should not be instantiated.");
+    }
+
     public static ConnectionHandler getInstance() {
         return instance;
     }
