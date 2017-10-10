@@ -8,15 +8,14 @@ import javax.swing.*;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
-import java.util.HashMap;
 
 import static java.awt.EventQueue.invokeLater;
 import static javax.swing.UIManager.getInstalledLookAndFeels;
 
 public class KombatMainForm extends JFrame implements Runnable {
-    private HashMap<Integer, ClientPlayer> playerMap = new HashMap<>();
-    private int port = 8880;
     private Client2ServerConnector connector = new Client2ServerConnector();
+    private AttachedPlayerHandler players = new AttachedPlayerHandler();
+    private int port = 8880;
 
     public static void main(String args[]) throws SetLookAndFeelException {
         setLookAndFeel();
@@ -79,7 +78,7 @@ public class KombatMainForm extends JFrame implements Runnable {
 
     private void formWindowOpened(WindowEvent evt) {
         ClientPlayer player = new ClientPlayer();
-        getContentPane().add(player.playerCharacter);
+        getContentPane().add(player.character);
         connector.connect(port);
         getIdFor(player);
         repaint();
@@ -90,7 +89,7 @@ public class KombatMainForm extends JFrame implements Runnable {
     private void getIdFor(ClientPlayer player) {
         int id = connector.getIdForSelf();
         player.setId(id);
-        playerMap.put(player.getId(), player);
+        players.addPlayer(player);
     }
 
     @Override
@@ -118,24 +117,23 @@ public class KombatMainForm extends JFrame implements Runnable {
 
     private void addNewPlayer(String serverInput) {
         String[] data = serverInput.split("-");
-        ClientPlayer newPlayer = new ClientPlayer();
-        newPlayer.setId(Integer.parseInt(data[1]));
-        playerMap.put(newPlayer.getId(), newPlayer);
+        int id = Integer.parseInt(data[1]);
+        players.addPlayer(id);
         addPlayersToScreen();
     }
-
+// TODO class to translate messages between client-server
     private void addPlayersToScreen() {
-        for (ClientPlayer player : playerMap.values()) {
-            getContentPane().remove(player.playerCharacter);
+        for (ClientPlayer player : players.getAllPlayers()) {
+            getContentPane().remove(player.character);
             getContentPane().validate();
-            getContentPane().add(player.playerCharacter);
+            getContentPane().add(player.character);
         }
     }
 
     private void executeMovements(String serverInput) {
         String input[] = serverInput.split("-");
         int id = Integer.parseInt(input[0]);
-        ClientPlayer currentPlayer = playerMap.get(id);
+        ClientPlayer currentPlayer = players.get(id);
 
         String data[] = input[1].split("\\_");
         int x = Integer.parseInt(data[0]);

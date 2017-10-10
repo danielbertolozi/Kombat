@@ -1,12 +1,12 @@
 package com.bertolozi.Player;
 
 public class ClientPlayer {
-    public PlayerCharacter playerCharacter;
+    public PlayerCharacter character;
     private int id;
 
     public ClientPlayer() {
-        this.playerCharacter = new PlayerCharacter();
-        this.playerCharacter.setup();
+        this.character = new PlayerCharacter();
+        this.character.setup();
     }
 
     public int getId() {
@@ -18,6 +18,6 @@ public class ClientPlayer {
     }
 
     public void move(int x, int y) {
-        this.playerCharacter.move(x, y);
+        this.character.move(x, y);
     }
 }
