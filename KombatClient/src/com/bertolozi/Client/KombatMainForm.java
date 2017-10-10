@@ -128,7 +128,7 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
             }
         }
         int port = 0;
-        if (args.length != 0 && args[0] == "-p") {
+        if (args.length != 0 && args[0].equals("-p")) {
             port = Integer.parseInt(args[1]);
         }
         int finalPort = port;
