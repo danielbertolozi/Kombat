@@ -3,17 +3,11 @@ package com.bertolozi.Client;
 import com.bertolozi.Exceptions.SetLookAndFeelException;
 import com.bertolozi.Player.ClientPlayer;
 import com.bertolozi.Control.KeyTranslator;
-import sun.reflect.annotation.ExceptionProxy;
 
 import javax.swing.*;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.HashMap;
 
 import static java.awt.EventQueue.invokeLater;
@@ -21,9 +15,8 @@ import static javax.swing.UIManager.getInstalledLookAndFeels;
 
 public class KombatMainForm extends JFrame implements Runnable {
     private HashMap<Integer, ClientPlayer> playerMap = new HashMap<>();
-    private BufferedReader in;
-    private PrintWriter out;
     private int port = 8880;
+    private Client2ServerConnector connector = new Client2ServerConnector();
 
     public static void main(String args[]) throws SetLookAndFeelException {
         setLookAndFeel();
@@ -85,36 +78,19 @@ public class KombatMainForm extends JFrame implements Runnable {
     }
 
     private void formWindowOpened(WindowEvent evt) {
-        // TODO pass this responsibility to another class
         ClientPlayer player = new ClientPlayer();
         getContentPane().add(player.playerCharacter);
-        connect();
-        readAndSetId(player);
-        playerMap.put(player.getId(), player);
+        connector.connect(port);
+        getIdFor(player);
         repaint();
         Thread mainThread = new Thread(this);
         mainThread.start();
     }
 
-    private void connect() {
-        try {
-            Socket s = new Socket("localhost", port);
-            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            out = new PrintWriter(s.getOutputStream(), true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void readAndSetId(ClientPlayer player) {
-        String serverInput = "";
-        try {
-            serverInput = in.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        int parsed = Integer.parseInt(serverInput);
-        player.setId(parsed);
+    private void getIdFor(ClientPlayer player) {
+        int id = connector.getIdForSelf();
+        player.setId(id);
+        playerMap.put(player.getId(), player);
     }
 
     @Override
@@ -122,7 +98,8 @@ public class KombatMainForm extends JFrame implements Runnable {
         String serverInput;
         try {
             while (true) {
-                serverInput = in.readLine();
+                serverInput = connector.read();
+                // TODO maybe throw in some validations?
                 decodeCommand(serverInput);
             }
         } catch (Exception e) {
@@ -148,34 +125,36 @@ public class KombatMainForm extends JFrame implements Runnable {
     }
 
     private void addPlayersToScreen() {
-        getContentPane().removeAll();
-        for(ClientPlayer player : playerMap.values()) {
+        for (ClientPlayer player : playerMap.values()) {
+            getContentPane().remove(player.playerCharacter);
+            getContentPane().validate();
             getContentPane().add(player.playerCharacter);
         }
     }
 
     private void executeMovements(String serverInput) {
         String input[] = serverInput.split("-");
-        String data[] = input[1].split("\\_");
         int id = Integer.parseInt(input[0]);
         ClientPlayer currentPlayer = playerMap.get(id);
-        // TODO get id -> for each id -> get movements -> get player from list -> call function move with movements
+
+        String data[] = input[1].split("\\_");
         int x = Integer.parseInt(data[0]);
         int y = Integer.parseInt(data[1]);
+
         currentPlayer.move(x, y);
     }
 
     private void formKeyPressed(KeyEvent evt) {
         String code = KeyTranslator.translatePressEvent(evt.getKeyCode());
         if (code != null) {
-            out.println(code);
+            connector.send(code);
         }
     }
 
     private void formKeyReleased(KeyEvent evt) {
         String code = KeyTranslator.translateReleaseEvent(evt.getKeyCode());
         if (code != null) {
-            out.println(code);
+            connector.send(code);
         }
     }
 
