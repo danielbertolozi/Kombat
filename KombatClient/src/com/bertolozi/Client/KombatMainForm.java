@@ -1,7 +1,9 @@
 package com.bertolozi.Client;
 
+import com.bertolozi.Exceptions.SetLookAndFeelException;
 import com.bertolozi.Player.ClientPlayer;
 import com.bertolozi.Control.KeyTranslator;
+import sun.reflect.annotation.ExceptionProxy;
 
 import javax.swing.*;
 import java.awt.Graphics;
@@ -23,20 +25,27 @@ public class KombatMainForm extends JFrame implements Runnable {
     private PrintWriter out;
     private int port = 8880;
 
-    public static void main(String args[]) throws ClassNotFoundException, InstantiationException,
-            IllegalAccessException, UnsupportedLookAndFeelException {
-        for (UIManager.LookAndFeelInfo info : getInstalledLookAndFeels()) {
-            if ("Nimbus".equals(info.getName())) {
-                javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                break;
-            }
-        }
+    public static void main(String args[]) throws SetLookAndFeelException {
+        setLookAndFeel();
         int port = 0;
         if (args.length != 0 && args[0].equals("-p")) {
             port = Integer.parseInt(args[1]);
         }
         int finalPort = port;
         invokeLater(() -> new KombatMainForm(finalPort).setVisible(true));
+    }
+
+    private static void setLookAndFeel() throws SetLookAndFeelException {
+        for (UIManager.LookAndFeelInfo info : getInstalledLookAndFeels()) {
+            if ("Nimbus".equals(info.getName())) {
+                try {
+                    UIManager.setLookAndFeel(info.getClassName());
+                } catch (Exception e) {
+                    throw new SetLookAndFeelException();
+                }
+                break;
+            }
+        }
     }
 
     private KombatMainForm(int port) {
