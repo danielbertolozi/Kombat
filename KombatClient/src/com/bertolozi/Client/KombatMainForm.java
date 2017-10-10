@@ -8,9 +8,11 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.HashMap;
 
 import static java.awt.EventQueue.invokeLater;
 import static javax.swing.UIManager.getInstalledLookAndFeels;
@@ -18,6 +20,7 @@ import static javax.swing.UIManager.getInstalledLookAndFeels;
 public class KombatMainForm extends javax.swing.JFrame implements Runnable {
     Thread gameFlowThread;
     ClientPlayer player;
+    HashMap<Integer, ClientPlayer> playerList = new HashMap<Integer, ClientPlayer>();
     Socket s;
     BufferedReader in;
     PrintWriter out;

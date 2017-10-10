@@ -12,6 +12,7 @@ public class ServerPlayer {
     private int y = 0;
     private int w = 90;
     private int h = 127;
+    private int id;
     private static final int SPEED = 8;
     private HashMap<String, Boolean> movementMap = new HashMap<String, Boolean>() {{
         put("RIGHT", false);
@@ -19,6 +20,10 @@ public class ServerPlayer {
         put("UP", false);
         put("DOWN", false);
     }};
+
+    public ServerPlayer() {
+        this.id = this.hashCode();
+    }
 
     private void move() {
         if (movementMap.get("RIGHT")) {
@@ -56,7 +61,7 @@ public class ServerPlayer {
             String command;
             try {
                 while (!(command = in.readLine()).equals("exit")) {
-                    evalCommand(command);
+                    movePlayerByCommand(command);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -64,7 +69,7 @@ public class ServerPlayer {
         });
     }
 
-    private void evalCommand(String command) {
+    private void movePlayerByCommand(String command) {
         String direction = KeyTranslator.getDirectionForPress(command);
         if (direction == null) {
             direction = KeyTranslator.getDirectionForRelease(command);
@@ -77,6 +82,8 @@ public class ServerPlayer {
     }
 
     private void syncMovement(PrintWriter out) {
+        // add player id here
+        // TODO broadcast this wiht all positions and to all players
         out.println(x + "_" + y + "_"
                 + w + "" + h);
     }
