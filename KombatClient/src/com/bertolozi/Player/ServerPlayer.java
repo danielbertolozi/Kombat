@@ -14,11 +14,6 @@ public class ServerPlayer {
     private int w = 90;
     private int h = 127;
     private ConnectionHandler connectionHandler;
-
-    public int getId() {
-        return id;
-    }
-
     private int id;
     private static final int SPEED = 8;
     private HashMap<String, Boolean> movementMap = new HashMap<String, Boolean>() {{
@@ -92,5 +87,9 @@ public class ServerPlayer {
 
     private void syncMovement() {
         connectionHandler.broadcast(this.id + "-" + x + "_" + y);
+    }
+
+    public int getId() {
+        return id;
     }
 }

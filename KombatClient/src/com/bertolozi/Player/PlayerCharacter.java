@@ -7,7 +7,6 @@ import javax.swing.JLabel;
 public class PlayerCharacter extends JLabel {
     private int x = 0;
     private int y = 0;
-    private int id;
     ImageIcon walkLeft;
     ImageIcon walkRight;
     private final String RIGHT_SPRITE = "/Players/walk_r.gif";
@@ -62,13 +61,5 @@ public class PlayerCharacter extends JLabel {
 
     private Image getScaledImageFrom(ImageIcon source, int width, int height) {
         return source.getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT);
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 }
