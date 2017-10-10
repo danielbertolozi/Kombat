@@ -80,13 +80,13 @@ public class KombatMainForm extends JFrame implements Runnable {
         ClientPlayer player = new ClientPlayer();
         getContentPane().add(player.character);
         connector.connect(port);
-        getIdFor(player);
+        initialSetupFor(player);
         repaint();
         Thread mainThread = new Thread(this);
         mainThread.start();
     }
 
-    private void getIdFor(ClientPlayer player) {
+    private void initialSetupFor(ClientPlayer player) {
         int id = connector.getIdForSelf();
         player.setId(id);
         players.addPlayer(player);
