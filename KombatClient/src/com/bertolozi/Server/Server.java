@@ -9,7 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-    private ConnectionHandler connectionHandler = ConnectionHandler.getInstance();
+    private ClientConnector clientConnector = ClientConnector.getInstance();
     private int[] ports = new int[] {8880, 8881};
     public static void main(String[] args) {
         System.out.println("Starting...");
@@ -27,7 +27,7 @@ public class Server {
                 BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
                 PrintWriter out = new PrintWriter(s.getOutputStream(), true);
                 out.println(player.hashCode());
-                connectionHandler.addPlayer(player, out);
+                clientConnector.addPlayer(player, out);
                 Runnable runnable = player.getPlayerActionsHandler(player, in, out);
                 Thread th = new Thread(runnable);
                 th.start();
