@@ -8,7 +8,6 @@ import java.util.HashMap;
 public class ConnectionHandler {
     private HashMap<Integer, ServerPlayer> playerHashMap = new HashMap<Integer, ServerPlayer>();
     private HashMap<Integer, PrintWriter> writerHashMap = new HashMap<Integer, PrintWriter>();
-    // TODO perhaps use something else than a hashmap for broadcasting?
     private static ConnectionHandler instance = new ConnectionHandler();
 
     public ConnectionHandler() {
