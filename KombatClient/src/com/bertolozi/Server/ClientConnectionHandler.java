@@ -12,10 +12,6 @@ public class ClientConnectionHandler {
     private MessageTranslator message = new MessageTranslator();
     private static ClientConnectionHandler instance = new ClientConnectionHandler();
 
-    public ClientConnectionHandler() {
-        throw new ExceptionInInitializerError("This class should not be instantiated.");
-    }
-
     public static ClientConnectionHandler getInstance() {
         return instance;
     }
