@@ -1,7 +1,7 @@
 package com.bertolozi.Player;
 
 import com.bertolozi.Control.KeyListener;
-import com.bertolozi.Server.ClientConnector;
+import com.bertolozi.Server.ClientConnectionHandler;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -11,14 +11,14 @@ public class ServerPlayer {
     private int y = 0;
     private int w = 90;
     private int h = 127;
-    private ClientConnector clientConnector;
+    private ClientConnectionHandler clientConnectionHandler;
     private KeyListener keyListener;
     private int id;
     private static final int SPEED = 8;
 
     public ServerPlayer() {
         this.id = this.hashCode();
-        this.clientConnector = ClientConnector.getInstance();
+        this.clientConnectionHandler = ClientConnectionHandler.getInstance();
     }
 
     private void move() {
@@ -37,7 +37,7 @@ public class ServerPlayer {
     }
 
     public Runnable getPlayerActionsHandler(ServerPlayer player, BufferedReader in, PrintWriter out) {
-        // TODO see if I can use ClientConnector for something here
+        // TODO see if I can use ClientConnectionHandler for something here
         return () -> {
             keyListener = new KeyListener(in);
             keyListener.start();
@@ -54,7 +54,7 @@ public class ServerPlayer {
     }
 
     private void syncMovement() {
-        clientConnector.broadcast(this.id + "-" + x + "_" + y);
+        clientConnectionHandler.broadcast(this.id + "-" + x + "_" + y);
     }
 
     public int getId() {

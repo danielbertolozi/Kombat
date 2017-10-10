@@ -5,16 +5,16 @@ import com.bertolozi.Player.ServerPlayer;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
-public class ClientConnector {
+public class ClientConnectionHandler {
     private HashMap<Integer, ServerPlayer> playerHashMap = new HashMap<Integer, ServerPlayer>();
     private HashMap<Integer, PrintWriter> writerHashMap = new HashMap<Integer, PrintWriter>();
-    private static ClientConnector instance = new ClientConnector();
+    private static ClientConnectionHandler instance = new ClientConnectionHandler();
 
-    public ClientConnector() {
+    public ClientConnectionHandler() {
         throw new ExceptionInInitializerError("This class should not be instantiated.");
     }
 
-    public static ClientConnector getInstance() {
+    public static ClientConnectionHandler getInstance() {
         return instance;
     }
 
