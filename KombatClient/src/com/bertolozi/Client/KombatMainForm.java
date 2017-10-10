@@ -63,13 +63,27 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
     }
 
     private void formWindowOpened(WindowEvent evt) {
+        // TODO pass this responsibility to another class
         player = new ClientPlayer();
-        player.setup();
-        getContentPane().add(player);
+        getContentPane().add(player.playerCharacter);
         connect();
+        readAndSetId(player);
+        playerList.put(player.getId(), player);
         repaint();
         gameFlowThread = new Thread(this);
         gameFlowThread.start();
+    }
+
+    private void readAndSetId(ClientPlayer player) {
+        String command = "";
+        try {
+            command = in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // TODO parse command
+        int parsed = Integer.parseInt(command);
+        player.setId(parsed);
     }
 
     public void connect() {
@@ -87,15 +101,46 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
         try {
             while (true) {
                 command = in.readLine();
-                String data[] = command.split("\\_");
-                int x = Integer.parseInt(data[0]);
-                int y = Integer.parseInt(data[1]);
-                player.move(x, y);
+                decodeCommand(command);
             }
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    private void decodeCommand(String command) {
+        if (command.startsWith("NEW")) {
+            addNewPlayer(command);
+        } else {
+            executeMovements(command);
+        }
+    }
+
+    private void addNewPlayer(String command) {
+        String[] data = command.split("-");
+        ClientPlayer newPlayer = new ClientPlayer();
+        newPlayer.setId(Integer.parseInt(data[1]));
+        playerList.put(newPlayer.getId(), newPlayer);
+        addPlayersToScreen();
+    }
+
+    private void addPlayersToScreen() {
+        getContentPane().removeAll();
+        for(ClientPlayer player : playerList.values()) {
+            getContentPane().add(player.playerCharacter);
+        }
+    }
+
+    private void executeMovements(String command) {
+        String input[] = command.split("-");
+        String data[] = input[1].split("\\_");
+        int id = Integer.parseInt(input[0]);
+        ClientPlayer currentPlayer = playerList.get(id);
+        // TODO get id -> for each id -> get movements -> get player from list -> call function move with movements
+        int x = Integer.parseInt(data[0]);
+        int y = Integer.parseInt(data[1]);
+        currentPlayer.move(x, y);
     }
 
     private void formKeyPressed(KeyEvent evt) {

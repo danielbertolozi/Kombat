@@ -1,6 +1,7 @@
 package com.bertolozi.Player;
 
 import com.bertolozi.Control.KeyTranslator;
+import com.bertolozi.Server.ConnectionHandler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,6 +13,12 @@ public class ServerPlayer {
     private int y = 0;
     private int w = 90;
     private int h = 127;
+    private ConnectionHandler connectionHandler;
+
+    public int getId() {
+        return id;
+    }
+
     private int id;
     private static final int SPEED = 8;
     private HashMap<String, Boolean> movementMap = new HashMap<String, Boolean>() {{
@@ -23,6 +30,7 @@ public class ServerPlayer {
 
     public ServerPlayer() {
         this.id = this.hashCode();
+        this.connectionHandler = ConnectionHandler.getInstance();
     }
 
     private void move() {
@@ -41,6 +49,7 @@ public class ServerPlayer {
     }
 
     public Runnable getPlayerActionsHandler(ServerPlayer player, BufferedReader in, PrintWriter out) {
+        // TODO see if I can use ConnectionHandler for something here
         return () -> {
             Thread keymapLoop = getKeymapListener(in);
             keymapLoop.start();
@@ -48,7 +57,7 @@ public class ServerPlayer {
                 while (true) {
                     Thread.sleep(30);
                     player.move();
-                    syncMovement(out);
+                    syncMovement();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -81,10 +90,7 @@ public class ServerPlayer {
         movementMap.put(direction, true);
     }
 
-    private void syncMovement(PrintWriter out) {
-        // add player id here
-        // TODO broadcast this wiht all positions and to all players
-        out.println(x + "_" + y + "_"
-                + w + "" + h);
+    private void syncMovement() {
+        connectionHandler.broadcast(this.id + "-" + x + "_" + y);
     }
 }
