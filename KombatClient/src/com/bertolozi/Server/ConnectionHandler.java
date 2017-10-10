@@ -20,7 +20,7 @@ public class ConnectionHandler {
     }
 
     public void broadcast(String command) {
-        for (PrintWriter out : writerHashMap.values()) {
+        for (PrintWriter out : instance.writerHashMap.values()) {
             out.println(command);
         }
     }
