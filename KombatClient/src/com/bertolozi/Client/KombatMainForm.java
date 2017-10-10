@@ -17,16 +17,29 @@ import java.util.HashMap;
 import static java.awt.EventQueue.invokeLater;
 import static javax.swing.UIManager.getInstalledLookAndFeels;
 
-public class KombatMainForm extends javax.swing.JFrame implements Runnable {
-    Thread gameFlowThread;
-    ClientPlayer player;
-    HashMap<Integer, ClientPlayer> playerList = new HashMap<Integer, ClientPlayer>();
-    Socket s;
-    BufferedReader in;
-    PrintWriter out;
-    int port = 8880;
+public class KombatMainForm extends JFrame implements Runnable {
+    private HashMap<Integer, ClientPlayer> playerMap = new HashMap<>();
+    private BufferedReader in;
+    private PrintWriter out;
+    private int port = 8880;
 
-    public KombatMainForm(int port) {
+    public static void main(String args[]) throws ClassNotFoundException, InstantiationException,
+            IllegalAccessException, UnsupportedLookAndFeelException {
+        for (UIManager.LookAndFeelInfo info : getInstalledLookAndFeels()) {
+            if ("Nimbus".equals(info.getName())) {
+                javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                break;
+            }
+        }
+        int port = 0;
+        if (args.length != 0 && args[0].equals("-p")) {
+            port = Integer.parseInt(args[1]);
+        }
+        int finalPort = port;
+        invokeLater(() -> new KombatMainForm(finalPort).setVisible(true));
+    }
+
+    private KombatMainForm(int port) {
         this.port = port != 0 ? port : this.port;
         initComponents();
     }
@@ -64,31 +77,19 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
 
     private void formWindowOpened(WindowEvent evt) {
         // TODO pass this responsibility to another class
-        player = new ClientPlayer();
+        ClientPlayer player = new ClientPlayer();
         getContentPane().add(player.playerCharacter);
         connect();
         readAndSetId(player);
-        playerList.put(player.getId(), player);
+        playerMap.put(player.getId(), player);
         repaint();
-        gameFlowThread = new Thread(this);
-        gameFlowThread.start();
+        Thread mainThread = new Thread(this);
+        mainThread.start();
     }
 
-    private void readAndSetId(ClientPlayer player) {
-        String command = "";
+    private void connect() {
         try {
-            command = in.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // TODO parse command
-        int parsed = Integer.parseInt(command);
-        player.setId(parsed);
-    }
-
-    public void connect() {
-        try {
-            s = new Socket("localhost", port);
+            Socket s = new Socket("localhost", port);
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
             out = new PrintWriter(s.getOutputStream(), true);
         } catch (Exception e) {
@@ -96,12 +97,24 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
         }
     }
 
-    public void gameFlow() {
-        String command;
+    private void readAndSetId(ClientPlayer player) {
+        String serverInput = "";
+        try {
+            serverInput = in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int parsed = Integer.parseInt(serverInput);
+        player.setId(parsed);
+    }
+
+    @Override
+    public void run() {
+        String serverInput;
         try {
             while (true) {
-                command = in.readLine();
-                decodeCommand(command);
+                serverInput = in.readLine();
+                decodeCommand(serverInput);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -109,34 +122,34 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
         }
     }
 
-    private void decodeCommand(String command) {
-        if (command.startsWith("NEW")) {
-            addNewPlayer(command);
+    private void decodeCommand(String serverInput) {
+        if (serverInput.startsWith("NEW")) {
+            addNewPlayer(serverInput);
         } else {
-            executeMovements(command);
+            executeMovements(serverInput);
         }
     }
 
-    private void addNewPlayer(String command) {
-        String[] data = command.split("-");
+    private void addNewPlayer(String serverInput) {
+        String[] data = serverInput.split("-");
         ClientPlayer newPlayer = new ClientPlayer();
         newPlayer.setId(Integer.parseInt(data[1]));
-        playerList.put(newPlayer.getId(), newPlayer);
+        playerMap.put(newPlayer.getId(), newPlayer);
         addPlayersToScreen();
     }
 
     private void addPlayersToScreen() {
         getContentPane().removeAll();
-        for(ClientPlayer player : playerList.values()) {
+        for(ClientPlayer player : playerMap.values()) {
             getContentPane().add(player.playerCharacter);
         }
     }
 
-    private void executeMovements(String command) {
-        String input[] = command.split("-");
+    private void executeMovements(String serverInput) {
+        String input[] = serverInput.split("-");
         String data[] = input[1].split("\\_");
         int id = Integer.parseInt(input[0]);
-        ClientPlayer currentPlayer = playerList.get(id);
+        ClientPlayer currentPlayer = playerMap.get(id);
         // TODO get id -> for each id -> get movements -> get player from list -> call function move with movements
         int x = Integer.parseInt(data[0]);
         int y = Integer.parseInt(data[1]);
@@ -160,26 +173,5 @@ public class KombatMainForm extends javax.swing.JFrame implements Runnable {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-    }
-
-    @Override
-    public void run() {
-        gameFlow();
-    }
-
-    public static void main(String args[]) throws ClassNotFoundException, InstantiationException,
-                                                  IllegalAccessException, UnsupportedLookAndFeelException {
-        for (UIManager.LookAndFeelInfo info : getInstalledLookAndFeels()) {
-            if ("Nimbus".equals(info.getName())) {
-                javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                break;
-            }
-        }
-        int port = 0;
-        if (args.length != 0 && args[0].equals("-p")) {
-            port = Integer.parseInt(args[1]);
-        }
-        int finalPort = port;
-        invokeLater(() -> new KombatMainForm(finalPort).setVisible(true));
     }
 }
