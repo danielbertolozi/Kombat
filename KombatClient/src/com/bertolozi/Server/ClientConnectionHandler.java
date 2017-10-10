@@ -1,5 +1,6 @@
 package com.bertolozi.Server;
 
+import com.bertolozi.Message.MessageTranslator;
 import com.bertolozi.Player.ServerPlayer;
 
 import java.io.PrintWriter;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 public class ClientConnectionHandler {
     private HashMap<Integer, ServerPlayer> playerHashMap = new HashMap<Integer, ServerPlayer>();
     private HashMap<Integer, PrintWriter> writerHashMap = new HashMap<Integer, PrintWriter>();
+    private MessageTranslator message = new MessageTranslator();
     private static ClientConnectionHandler instance = new ClientConnectionHandler();
 
     public ClientConnectionHandler() {
@@ -59,6 +61,7 @@ public class ClientConnectionHandler {
     }
 
     private void sendIdToPlayer(PrintWriter out, int id) {
-        out.println("NEW-" + id + "-0_0");
+        String newPlayer = message.newPlayerString(id);
+        out.println(newPlayer);
     }
 }

@@ -1,6 +1,7 @@
 package com.bertolozi.Client;
 
 import com.bertolozi.Exceptions.SetLookAndFeelException;
+import com.bertolozi.Message.MessageTranslator;
 import com.bertolozi.Player.ClientPlayer;
 import com.bertolozi.Control.KeyTranslator;
 
@@ -15,6 +16,7 @@ import static javax.swing.UIManager.getInstalledLookAndFeels;
 public class KombatMainForm extends JFrame implements Runnable {
     private Client2ServerConnector connector = new Client2ServerConnector();
     private AttachedPlayerHandler players = new AttachedPlayerHandler();
+    private MessageTranslator message = new MessageTranslator();
     private int port = 8880;
 
     public static void main(String args[]) throws SetLookAndFeelException {
@@ -108,7 +110,7 @@ public class KombatMainForm extends JFrame implements Runnable {
     }
 
     private void decodeCommand(String serverInput) {
-        if (serverInput.startsWith("NEW")) {
+        if (message.isNewPlayer(serverInput)) {
             addNewPlayer(serverInput);
         } else {
             executeMovements(serverInput);
@@ -116,8 +118,7 @@ public class KombatMainForm extends JFrame implements Runnable {
     }
 
     private void addNewPlayer(String serverInput) {
-        String[] data = serverInput.split("-");
-        int id = Integer.parseInt(data[1]);
+        int id = message.getIdForNewPlayer(serverInput);
         players.addPlayer(id);
         addPlayersToScreen();
     }
@@ -131,15 +132,12 @@ public class KombatMainForm extends JFrame implements Runnable {
     }
 
     private void executeMovements(String serverInput) {
-        String input[] = serverInput.split("-");
-        int id = Integer.parseInt(input[0]);
+        int id = message.getIdForPlayer(serverInput);
         ClientPlayer currentPlayer = players.get(id);
 
-        String data[] = input[1].split("\\_");
-        int x = Integer.parseInt(data[0]);
-        int y = Integer.parseInt(data[1]);
+        int[] coord = message.getCoordinates(serverInput);
 
-        currentPlayer.move(x, y);
+        currentPlayer.move(coord[0], coord[1]);
     }
 
     private void formKeyPressed(KeyEvent evt) {

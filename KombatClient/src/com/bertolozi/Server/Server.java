@@ -21,11 +21,11 @@ public class Server {
         int playerCount = 0;
         while (playerCount < 2) {
             try {
-                ServerPlayer player = new ServerPlayer();
                 ServerSocket ss = new ServerSocket(ports[playerCount]);
                 Socket s = ss.accept();
                 BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
                 PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+                ServerPlayer player = new ServerPlayer();
                 out.println(player.hashCode());
                 clientConnectionHandler.addPlayer(player, out);
                 Runnable runnable = player.getPlayerActionsHandler(player, in, out);
