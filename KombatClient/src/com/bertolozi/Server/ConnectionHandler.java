@@ -31,29 +31,35 @@ public class ConnectionHandler {
         int key = player.getId();
         instance.playerHashMap.put(key, player);
         instance.writerHashMap.put(key, out);
-        synchronizeNewPlayer(player, out);
-        synchronizeOtherPlayers(key);
+        synchronizePlayers(player, out);
     }
 
-    private void synchronizeNewPlayer(ServerPlayer newPlayer, PrintWriter newPlayerOut) {
-        // send everyone to new
-        int oldId;
-        for (ServerPlayer oldPlayer : playerHashMap.values()) {
-            oldId = oldPlayer.getId();
-            if (newPlayer.getId() != oldId) {
-                newPlayerOut.println("NEW-" + oldId + "-0_0");
+    private void synchronizePlayers(ServerPlayer player, PrintWriter out) {
+        syncExistingPlayersWithNewPlayer(player, out);
+        syncNewPlayerWithExistingPlayers(player.getId());
+    }
+
+    private void syncExistingPlayersWithNewPlayer(ServerPlayer newPlayer, PrintWriter newPlayerOut) {
+        int actualId;
+        for (ServerPlayer player : playerHashMap.values()) {
+            actualId = player.getId();
+            if (newPlayer.getId() != actualId) {
+                sendIdToPlayer(newPlayerOut, actualId);
             }
         }
     }
 
-    private void synchronizeOtherPlayers(int newPlayerId) {
-        // send new to everyone
+    private void syncNewPlayerWithExistingPlayers(int newPlayerId) {
         // TODO change X and Y from 0 0 to something else (maybe rand?)
         for (ServerPlayer player : playerHashMap.values()) {
             if (player.getId() != newPlayerId) {
                 PrintWriter out = writerHashMap.get(player.getId());
-                out.println("NEW-" + newPlayerId + "-0_0");
+                sendIdToPlayer(out, newPlayerId);
             }
         }
+    }
+
+    private void sendIdToPlayer(PrintWriter out, int id) {
+        out.println("NEW-" + id + "-0_0");
     }
 }
