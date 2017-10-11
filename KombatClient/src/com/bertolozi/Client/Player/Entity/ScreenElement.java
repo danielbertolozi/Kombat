@@ -1,28 +1,26 @@
-package com.bertolozi.Player;
+package com.bertolozi.Client.Player.Entity;
 
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-public class PlayerCharacter extends JLabel {
+public class ScreenElement extends JLabel {
     private int x = 0;
     private int y = 0;
-    ImageIcon walkLeft;
-    ImageIcon walkRight;
-    private final String RIGHT_SPRITE = "/Players/walk_r.gif";
-    private final String LEFT_SPRITE = "/Players/walk_l.gif";
+    private ImageIcon walkLeft;
+    private ImageIcon walkRight;
     private final int PLAYER_WIDTH = 88;
     private final int PLAYER_HEIGHT = 127;
 
-    public void setup() {
+    void setup() {
         setText("12");
-        walkRight = getPlayerImageFrom(RIGHT_SPRITE);
-        walkLeft = getPlayerImageFrom(LEFT_SPRITE);
+        walkRight = getPlayerImageFrom("/Players/walk_r.gif");
+        walkLeft = getPlayerImageFrom("/Players/walk_l.gif");
         move();
         setIconRight();
     }
 
-    public void move() {
+    private void move() {
         setBounds(this.x, this.y, 90, 127);
     }
 
@@ -38,6 +36,7 @@ public class PlayerCharacter extends JLabel {
         }
     }
 
+    @Override
     public void move(int x, int y) {
         setPlayerDirection(x);
         this.x = x;
@@ -45,11 +44,11 @@ public class PlayerCharacter extends JLabel {
         this.move();
     }
 
-    public void setIconRight() {
+    private void setIconRight() {
         setIcon(walkRight);
     }
 
-    public void setIconLeft() {
+    private void setIconLeft() {
         setIcon(walkLeft);
     }
 

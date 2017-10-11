@@ -1,11 +1,10 @@
-package com.bertolozi.Player;
+package com.bertolozi.Client.Player.Entity;
 
-public class ClientPlayer {
-    public PlayerCharacter character;
+public class Player {
+    public ScreenElement character = new ScreenElement();
     private int id;
 
-    public ClientPlayer() {
-        this.character = new PlayerCharacter();
+    public Player() {
         this.character.setup();
     }
 

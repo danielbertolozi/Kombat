@@ -1,6 +1,7 @@
-package com.bertolozi.Server;
+package com.bertolozi.Server.Application;
 
-import com.bertolozi.Player.ServerPlayer;
+import com.bertolozi.Server.Connection.ClientConnector;
+import com.bertolozi.Server.Player.Entity.Player;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -9,15 +10,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-    private ClientConnectionHandler clientConnectionHandler = ClientConnectionHandler.getInstance();
+    private ClientConnector clientConnector = ClientConnector.getInstance();
     private int[] ports = new int[] {8880, 8881};
     public static void main(String[] args) {
         System.out.println("Starting...");
         Server server = new Server();
         server.waitForPlayer();
     }
-
-    public void waitForPlayer() {
+// TODO clean this mess
+    private void waitForPlayer() {
         int playerCount = 0;
         while (playerCount < 2) {
             try {
@@ -25,10 +26,10 @@ public class Server {
                 Socket s = ss.accept();
                 BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
                 PrintWriter out = new PrintWriter(s.getOutputStream(), true);
-                ServerPlayer player = new ServerPlayer();
+                Player player = new Player();
                 out.println(player.hashCode());
-                clientConnectionHandler.addPlayer(player, out);
-                Runnable runnable = player.getPlayerActionsHandler(player, in, out);
+                clientConnector.addPlayer(player, out);
+                Runnable runnable = player.getActionHandler(in);
                 Thread th = new Thread(runnable);
                 th.start();
                 playerCount++;
