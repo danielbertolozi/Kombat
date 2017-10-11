@@ -26,4 +26,7 @@ public class AttachedPlayerHandler {
         return playerMap.get(id);
     }
 
+    public void remove(int id) {
+        playerMap.remove(id);
+    }
 }

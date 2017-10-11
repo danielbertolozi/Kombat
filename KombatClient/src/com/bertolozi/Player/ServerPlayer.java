@@ -1,18 +1,21 @@
 package com.bertolozi.Player;
 
 import com.bertolozi.Control.KeyListener;
+import com.bertolozi.Message.MessageTranslator;
 import com.bertolozi.Server.ClientConnectionHandler;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 
 public class ServerPlayer {
+    private KeyListener keyListener;
+    private ClientConnectionHandler clientConnectionHandler;
+    private MessageTranslator message = new MessageTranslator();
+    private Thread playerActionListener;
     private int x = 0;
     private int y = 0;
     private int w = 90;
     private int h = 127;
-    private ClientConnectionHandler clientConnectionHandler;
-    private KeyListener keyListener;
     private int id;
     private static final int SPEED = 8;
 
@@ -37,27 +40,36 @@ public class ServerPlayer {
     }
 
     public Runnable getPlayerActionsHandler(ServerPlayer player, BufferedReader in, PrintWriter out) {
-        // TODO see if I can use ClientConnectionHandler for something here
-        return () -> {
-            keyListener = new KeyListener(in);
-            keyListener.start();
-            try {
-                while (true) {
-                    Thread.sleep(30);
-                    player.move();
-                    syncMovement();
+        if (playerActionListener == null) {
+            playerActionListener = new Thread(() -> {
+                keyListener = new KeyListener(in, this);
+                keyListener.start();
+                try {
+                    while (true) {
+                        Thread.sleep(30);
+                        player.move();
+                        syncMovement();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        };
+            });
+        }
+        return this.playerActionListener;
     }
 
     private void syncMovement() {
-        clientConnectionHandler.broadcast(this.id + "-" + x + "_" + y);
+        String msg = message.movement(id, x, y);
+        clientConnectionHandler.broadcast(msg);
     }
 
     public int getId() {
         return id;
+    }
+
+    public void disconnect() {
+        playerActionListener.interrupt();
+        keyListener.interrupt();
+        clientConnectionHandler.removePlayer(this);
     }
 }

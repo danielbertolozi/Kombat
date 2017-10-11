@@ -24,6 +24,14 @@ public class ClientConnectionHandler {
 
     // TODO in the future, implement a thread that keep checking on a queue
 
+    public void removePlayer(ServerPlayer player) {
+        int id = player.getId();
+        instance.playerHashMap.remove(id);
+        instance.writerHashMap.remove(id).close();
+        String deletion = message.delete(id);
+        instance.broadcast(deletion);
+    }
+
     public void addPlayer(ServerPlayer player, PrintWriter out) {
         int key = player.getId();
         instance.playerHashMap.put(key, player);
@@ -57,7 +65,7 @@ public class ClientConnectionHandler {
     }
 
     private void sendIdToPlayer(PrintWriter out, int id) {
-        String newPlayer = message.newPlayerString(id);
+        String newPlayer = message.newPlayer(id);
         out.println(newPlayer);
     }
 }

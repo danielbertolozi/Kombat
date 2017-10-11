@@ -17,6 +17,7 @@ public class KombatMainForm extends JFrame implements Runnable {
     private Client2ServerConnector connector = new Client2ServerConnector();
     private AttachedPlayerHandler players = new AttachedPlayerHandler();
     private MessageTranslator message = new MessageTranslator();
+    ClientPlayer player;
     private int port = 8880;
 
     public static void main(String args[]) throws SetLookAndFeelException {
@@ -54,6 +55,13 @@ public class KombatMainForm extends JFrame implements Runnable {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
             }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (player != null) {
+                    connector.disconnect(player.getId());
+                }
+            }
         });
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(KeyEvent evt) {
@@ -79,16 +87,16 @@ public class KombatMainForm extends JFrame implements Runnable {
     }
 
     private void formWindowOpened(WindowEvent evt) {
-        ClientPlayer player = new ClientPlayer();
+        player = new ClientPlayer();
         getContentPane().add(player.character);
         connector.connect(port);
-        initialSetupFor(player);
+        initialSetupForSelf();
         repaint();
         Thread mainThread = new Thread(this);
         mainThread.start();
     }
 
-    private void initialSetupFor(ClientPlayer player) {
+    private void initialSetupForSelf() {
         int id = connector.getIdForSelf();
         player.setId(id);
         players.addPlayer(player);
@@ -112,6 +120,8 @@ public class KombatMainForm extends JFrame implements Runnable {
     private void decodeCommand(String serverInput) {
         if (message.isNewPlayer(serverInput)) {
             addNewPlayer(serverInput);
+        } if (message.isDeletion(serverInput)) {
+            removePlayer(serverInput);
         } else {
             executeMovements(serverInput);
         }
@@ -122,7 +132,13 @@ public class KombatMainForm extends JFrame implements Runnable {
         players.addPlayer(id);
         addPlayersToScreen();
     }
-// TODO class to translate messages between client-server
+
+    private void removePlayer(String serverInput) {
+        int id = message.delete(serverInput);
+        players.remove(id);
+        addPlayersToScreen();
+    }
+
     private void addPlayersToScreen() {
         for (ClientPlayer player : players.getAllPlayers()) {
             getContentPane().remove(player.character);
