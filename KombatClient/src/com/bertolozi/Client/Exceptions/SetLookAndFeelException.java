@@ -1,4 +1,4 @@
-package com.bertolozi.Exceptions;
+package com.bertolozi.Client.Exceptions;
 
 public class SetLookAndFeelException extends Exception {
     public SetLookAndFeelException() {

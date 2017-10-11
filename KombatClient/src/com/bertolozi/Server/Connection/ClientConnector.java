@@ -1,18 +1,17 @@
-package com.bertolozi.Server;
+package com.bertolozi.Server.Connection;
 
-import com.bertolozi.Message.MessageTranslator;
-import com.bertolozi.Player.ServerPlayer;
+import com.bertolozi.Server.Protocol.MessageTranslator;
+import com.bertolozi.Server.Player.Entity.Player;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
 
-public class ClientConnectionHandler {
-    private HashMap<Integer, ServerPlayer> playerHashMap = new HashMap<Integer, ServerPlayer>();
-    private HashMap<Integer, PrintWriter> writerHashMap = new HashMap<Integer, PrintWriter>();
-    private MessageTranslator message = new MessageTranslator();
-    private static ClientConnectionHandler instance = new ClientConnectionHandler();
+public class ClientConnector {
+    private HashMap<Integer, Player> playerHashMap = new HashMap<>();
+    private HashMap<Integer, PrintWriter> writerHashMap = new HashMap<>();
+    private static ClientConnector instance = new ClientConnector();
 
-    public static ClientConnectionHandler getInstance() {
+    public static ClientConnector getInstance() {
         return instance;
     }
 
@@ -24,29 +23,29 @@ public class ClientConnectionHandler {
 
     // TODO in the future, implement a thread that keep checking on a queue
 
-    public void removePlayer(ServerPlayer player) {
+    public void removePlayer(Player player) {
         int id = player.getId();
         instance.playerHashMap.remove(id);
         instance.writerHashMap.remove(id).close();
-        String deletion = message.delete(id);
+        String deletion = MessageTranslator.delete(id);
         instance.broadcast(deletion);
     }
 
-    public void addPlayer(ServerPlayer player, PrintWriter out) {
+    public void addPlayer(Player player, PrintWriter out) {
         int key = player.getId();
         instance.playerHashMap.put(key, player);
         instance.writerHashMap.put(key, out);
         synchronizePlayers(player, out);
     }
 
-    private void synchronizePlayers(ServerPlayer player, PrintWriter out) {
+    private void synchronizePlayers(Player player, PrintWriter out) {
         syncExistingPlayersWithNewPlayer(player, out);
         syncNewPlayerWithExistingPlayers(player.getId());
     }
 
-    private void syncExistingPlayersWithNewPlayer(ServerPlayer newPlayer, PrintWriter newPlayerOut) {
+    private void syncExistingPlayersWithNewPlayer(Player newPlayer, PrintWriter newPlayerOut) {
         int actualId;
-        for (ServerPlayer player : playerHashMap.values()) {
+        for (Player player : playerHashMap.values()) {
             actualId = player.getId();
             if (newPlayer.getId() != actualId) {
                 sendIdToPlayer(newPlayerOut, actualId);
@@ -56,7 +55,7 @@ public class ClientConnectionHandler {
 
     private void syncNewPlayerWithExistingPlayers(int newPlayerId) {
         // TODO change X and Y from 0 0 to something else (maybe rand?)
-        for (ServerPlayer player : playerHashMap.values()) {
+        for (Player player : playerHashMap.values()) {
             if (player.getId() != newPlayerId) {
                 PrintWriter out = writerHashMap.get(player.getId());
                 sendIdToPlayer(out, newPlayerId);
@@ -65,7 +64,7 @@ public class ClientConnectionHandler {
     }
 
     private void sendIdToPlayer(PrintWriter out, int id) {
-        String newPlayer = message.newPlayer(id);
+        String newPlayer = MessageTranslator.newPlayer(id);
         out.println(newPlayer);
     }
 }

@@ -1,23 +1,22 @@
-package com.bertolozi.Client;
+package com.bertolozi.Client.Application;
 
-import com.bertolozi.Exceptions.SetLookAndFeelException;
-import com.bertolozi.Message.MessageTranslator;
-import com.bertolozi.Player.ClientPlayer;
-import com.bertolozi.Control.KeyTranslator;
+import com.bertolozi.Client.Exceptions.SetLookAndFeelException;
+import com.bertolozi.Client.Protocol.MessageTranslator;
+import com.bertolozi.Client.Player.Entity.Player;
+import com.bertolozi.Client.Protocol.KeyTranslator;
 
 import javax.swing.*;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.util.Collection;
 
 import static java.awt.EventQueue.invokeLater;
 import static javax.swing.UIManager.getInstalledLookAndFeels;
 
-public class KombatMainForm extends JFrame implements Runnable {
-    private Client2ServerConnector connector = new Client2ServerConnector();
-    private AttachedPlayerHandler players = new AttachedPlayerHandler();
-    private MessageTranslator message = new MessageTranslator();
-    ClientPlayer player;
+public class KombatClient extends JFrame implements Runnable {
+    private ClientService service;
+    private Player player;
     private int port = 8880;
 
     public static void main(String args[]) throws SetLookAndFeelException {
@@ -27,7 +26,7 @@ public class KombatMainForm extends JFrame implements Runnable {
             port = Integer.parseInt(args[1]);
         }
         int finalPort = port;
-        invokeLater(() -> new KombatMainForm(finalPort).setVisible(true));
+        invokeLater(() -> new KombatClient(finalPort).setVisible(true));
     }
 
     private static void setLookAndFeel() throws SetLookAndFeelException {
@@ -43,8 +42,9 @@ public class KombatMainForm extends JFrame implements Runnable {
         }
     }
 
-    private KombatMainForm(int port) {
+    private KombatClient(int port) {
         this.port = port != 0 ? port : this.port;
+        service = new ClientService(this);
         initComponents();
     }
 
@@ -53,13 +53,13 @@ public class KombatMainForm extends JFrame implements Runnable {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
-                formWindowOpened(evt);
+                formWindowOpened();
             }
 
             @Override
             public void windowClosing(WindowEvent e) {
                 if (player != null) {
-                    connector.disconnect(player.getId());
+                    disconnect(player.getId());
                 }
             }
         });
@@ -86,87 +86,59 @@ public class KombatMainForm extends JFrame implements Runnable {
         pack();
     }
 
-    private void formWindowOpened(WindowEvent evt) {
-        player = new ClientPlayer();
+    private void disconnect(int id) {
+        String message = MessageTranslator.delete(id);
+        service.send(message);
+    }
+
+    private void formWindowOpened() {
+        player = new Player();
         getContentPane().add(player.character);
-        connector.connect(port);
-        initialSetupForSelf();
+        int id = service.connectAndGetId(port);
+        initialSetupForSelf(id);
         repaint();
         Thread mainThread = new Thread(this);
         mainThread.start();
     }
 
-    private void initialSetupForSelf() {
-        int id = connector.getIdForSelf();
+    private void initialSetupForSelf(int id) {
         player.setId(id);
-        players.addPlayer(player);
+        service.add(player);
     }
 
     @Override
     public void run() {
-        String serverInput;
-        try {
-            while (true) {
-                serverInput = connector.read();
-                // TODO maybe throw in some validations?
-                decodeCommand(serverInput);
+        String message = "";
+        while (true) {
+            try {
+                message = service.read();
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(1);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+            service.decodeCommand(message);
         }
     }
 
-    private void decodeCommand(String serverInput) {
-        if (message.isNewPlayer(serverInput)) {
-            addNewPlayer(serverInput);
-        } if (message.isDeletion(serverInput)) {
-            removePlayer(serverInput);
-        } else {
-            executeMovements(serverInput);
-        }
-    }
-
-    private void addNewPlayer(String serverInput) {
-        int id = message.getIdForNewPlayer(serverInput);
-        players.addPlayer(id);
-        addPlayersToScreen();
-    }
-
-    private void removePlayer(String serverInput) {
-        int id = message.delete(serverInput);
-        players.remove(id);
-        addPlayersToScreen();
-    }
-
-    private void addPlayersToScreen() {
-        for (ClientPlayer player : players.getAllPlayers()) {
+    void addPlayersToScreen(Collection<Player> players) {
+        for (Player player : players) {
             getContentPane().remove(player.character);
             getContentPane().validate();
             getContentPane().add(player.character);
         }
     }
 
-    private void executeMovements(String serverInput) {
-        int id = message.getIdForPlayer(serverInput);
-        ClientPlayer currentPlayer = players.get(id);
-
-        int[] coord = message.getCoordinates(serverInput);
-
-        currentPlayer.move(coord[0], coord[1]);
-    }
-
     private void formKeyPressed(KeyEvent evt) {
         String code = KeyTranslator.translatePressEvent(evt.getKeyCode());
         if (code != null) {
-            connector.send(code);
+            service.send(code);
         }
     }
 
     private void formKeyReleased(KeyEvent evt) {
         String code = KeyTranslator.translateReleaseEvent(evt.getKeyCode());
         if (code != null) {
-            connector.send(code);
+            service.send(code);
         }
     }
 
