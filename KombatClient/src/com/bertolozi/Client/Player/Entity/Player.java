@@ -7,6 +7,7 @@ public class Player {
     private boolean attack;
     private AttackRunnable attackRunnable;
 
+    // TODO collision detection with https://stackoverflow.com/questions/335600/collision-detection-between-two-images-in-java
     public Player() {
         this.character.setup();
         this.attackRunnable = new AttackRunnable(this);

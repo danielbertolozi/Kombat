@@ -3,18 +3,20 @@ package com.bertolozi.Client.Player.Entity;
 public class AttackRunnable implements Runnable {
     private final Player player;
 
-    public AttackRunnable(Player player) {
+    AttackRunnable(Player player) {
         this.player = player;
     }
 
     @Override
     public void run() {
-        this.player.setAttack(true);
+        player.setAttack(true);
+        player.character.setAttackMode(true);
         try {
-            Thread.sleep(300);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        this.player.setAttack(false);
+        player.setAttack(false);
+        player.character.setAttackMode(false);
     }
 }

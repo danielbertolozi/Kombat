@@ -7,17 +7,19 @@ import javax.swing.JLabel;
 public class ScreenElement extends JLabel {
     private int x = 0;
     private int y = 0;
-    private ImageIcon walkLeft;
-    private ImageIcon walkRight;
+    private ImageIcon walkLeft = getPlayerImageFrom("/Players/walk_l.gif");;
+    private ImageIcon walkRight = getPlayerImageFrom("/Players/walk_r.gif");;
+    private ImageIcon attackLeft = getPlayerImageFrom("/Players/attack_l.gif");
+    private ImageIcon attackRight = getPlayerImageFrom("/Players/attack_r.gif");
     private final int PLAYER_WIDTH = 88;
     private final int PLAYER_HEIGHT = 127;
+    private PlayerDirection direction;
+    private boolean attacking;
 
     void setup() {
         setText("12");
-        walkRight = getPlayerImageFrom("/Players/walk_r.gif");
-        walkLeft = getPlayerImageFrom("/Players/walk_l.gif");
         move();
-        setIconRight();
+        direction = PlayerDirection.RIGHT;
     }
 
     private void move() {
@@ -29,11 +31,16 @@ public class ScreenElement extends JLabel {
             return;
         }
         if (this.x > x) {
-            setIconLeft();
+            direction = PlayerDirection.LEFT;
         }
         else {
-            setIconRight();
+            direction = PlayerDirection.RIGHT;
         }
+        updateIcon();
+    }
+
+    void setAttackMode(boolean isAttack) {
+        attacking = isAttack;
     }
 
     @Override
@@ -44,12 +51,36 @@ public class ScreenElement extends JLabel {
         this.move();
     }
 
-    private void setIconRight() {
+    private void updateIcon() {
+        if (attacking) {
+            if (direction == PlayerDirection.LEFT) {
+                setAttackingIconLeft();
+                return;
+            }
+            setAttackingIconRight();
+            return;
+        }
+        if (direction == PlayerDirection.LEFT) {
+            setWalkingIconLeft();
+            return;
+        }
+        setWalkingIconRight();
+    }
+
+    private void setWalkingIconRight() {
         setIcon(walkRight);
     }
 
-    private void setIconLeft() {
+    private void setWalkingIconLeft() {
         setIcon(walkLeft);
+    }
+
+    private void setAttackingIconRight() {
+        setIcon(attackRight);
+    }
+
+    private void setAttackingIconLeft() {
+        setIcon(attackLeft);
     }
 
     private ImageIcon getPlayerImageFrom(String resource) {
