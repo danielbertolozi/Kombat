@@ -42,6 +42,7 @@ class ClientService {
             playerService.add(message);
             parent.addPlayersToScreen(playerService.get());
         } else if (MessageTranslator.isDeletion(message)) {
+            parent.clearPlayersFromScreen(playerService.get());
             playerService.remove(message);
             parent.addPlayersToScreen(playerService.get());
         } else {
