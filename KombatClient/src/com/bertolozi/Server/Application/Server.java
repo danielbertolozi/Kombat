@@ -20,7 +20,7 @@ public class Server {
 // TODO clean this mess
     private void waitForPlayer() {
         int playerCount = 0;
-        while (playerCount < 2) {
+        while (playerCount < ports.length) {
             try {
                 ServerSocket ss = new ServerSocket(ports[playerCount]);
                 Socket s = ss.accept();
