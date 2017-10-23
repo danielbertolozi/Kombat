@@ -12,7 +12,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-    private final int PORT = 8000;
+    private final int PORT = 8880;
     private ClientConnector clientConnector = ClientConnector.getInstance();
     private PortDispatcher portDispatcher = new PortDispatcher(PORT);
 
