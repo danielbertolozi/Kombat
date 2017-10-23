@@ -4,9 +4,12 @@ public class Player {
     public ScreenElement character = new ScreenElement();
     private int id;
     private int health;
+    private boolean attack;
+    private AttackRunnable attackRunnable;
 
     public Player() {
         this.character.setup();
+        this.attackRunnable = new AttackRunnable(this);
     }
 
     public int getId() {
@@ -21,11 +24,23 @@ public class Player {
         return health;
     }
 
+    public boolean isAttacking() {
+        return attack;
+    }
+
+    public void setAttack(boolean attack) {
+        this.attack = attack;
+    }
+
     public void setHealth(int health) {
         this.health = health;
     }
 
     public void move(int x, int y) {
         this.character.move(x, y);
+    }
+
+    public void attack() {
+        attackRunnable.run();
     }
 }
