@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.net.Socket;
 import java.util.Collection;
 
 import static java.awt.EventQueue.invokeLater;
@@ -21,12 +22,7 @@ public class KombatClient extends JFrame implements Runnable {
 
     public static void main(String args[]) throws SetLookAndFeelException {
         setLookAndFeel();
-        int port = 0;
-        if (args.length != 0 && args[0].equals("-p")) {
-            port = Integer.parseInt(args[1]);
-        }
-        int finalPort = port;
-        invokeLater(() -> new KombatClient(finalPort).setVisible(true));
+        invokeLater(() -> new KombatClient().setVisible(true));
     }
 
     private static void setLookAndFeel() throws SetLookAndFeelException {
@@ -42,8 +38,7 @@ public class KombatClient extends JFrame implements Runnable {
         }
     }
 
-    private KombatClient(int port) {
-        this.port = port != 0 ? port : this.port;
+    private KombatClient() {
         service = new ClientService(this);
         initComponents();
     }
@@ -94,6 +89,7 @@ public class KombatClient extends JFrame implements Runnable {
     private void formWindowOpened() {
         player = new Player();
         getContentPane().add(player.character);
+        int port = service.getConnectionPort(this.port);
         int id = service.connectAndGetId(port);
         initialSetupForSelf(id);
         repaint();

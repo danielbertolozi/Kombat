@@ -6,7 +6,10 @@ import com.bertolozi.Client.Player.Entity.Player;
 import com.bertolozi.Client.Player.Service.PlayerService;
 import com.bertolozi.Client.Protocol.MessageTranslator;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
 
 class ClientService {
     private PlayerService playerService = new PlayerService();
@@ -58,5 +61,17 @@ class ClientService {
         int[] coord = MessageTranslator.getCoordinates(message);
 
         currentPlayer.move(coord[0], coord[1]);
+    }
+
+    int getConnectionPort(int defaultPort) {
+        int port = 0;
+        try {
+            Socket socket = new Socket("localhost", defaultPort);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            port = Integer.parseInt(in.readLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return port;
     }
 }
