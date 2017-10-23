@@ -13,6 +13,7 @@ public class Player {
     private int w = 90;
     private int h = 127;
     private int id;
+    private int health;
 
     public Player() {
         this.id = this.hashCode();
@@ -33,5 +34,13 @@ public class Player {
     public void disconnect() {
         actionListener.kill();
         connector.removePlayer(this);
+    }
+
+    public void addDamage(int damage) {
+        health -= damage;
+    }
+
+    public int getHealth() {
+        return this.health;
     }
 }
