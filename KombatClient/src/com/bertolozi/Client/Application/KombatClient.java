@@ -19,6 +19,7 @@ public class KombatClient extends JFrame implements Runnable {
     private ClientService service;
     private Player player;
     private int port = 8880;
+    Thread mainThread;
 
     public static void main(String args[]) throws SetLookAndFeelException {
         setLookAndFeel();
@@ -56,6 +57,7 @@ public class KombatClient extends JFrame implements Runnable {
                 if (player != null) {
                     disconnect(player.getId());
                 }
+                mainThread.interrupt();
             }
         });
         addKeyListener(new java.awt.event.KeyAdapter() {
@@ -93,7 +95,7 @@ public class KombatClient extends JFrame implements Runnable {
         int id = service.connectAndGetId(port);
         initialSetupForSelf(id);
         repaint();
-        Thread mainThread = new Thread(this);
+        mainThread = new Thread(this);
         mainThread.start();
     }
 
@@ -118,10 +120,10 @@ public class KombatClient extends JFrame implements Runnable {
 
     void addPlayersToScreen(Collection<Player> players) {
         for (Player player : players) {
-            getContentPane().remove(player.character);
-            getContentPane().validate();
             getContentPane().add(player.character);
         }
+        getContentPane().validate();
+        repaint();
     }
 
     private void formKeyPressed(KeyEvent evt) {
@@ -141,5 +143,13 @@ public class KombatClient extends JFrame implements Runnable {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+    }
+
+    void clearPlayersFromScreen(Collection<Player> players) {
+        for (Player player : players) {
+            getContentPane().remove(player.character);
+        }
+        getContentPane().validate();
+        repaint();
     }
 }
