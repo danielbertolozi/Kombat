@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 public class Player {
     private ClientConnector connector;
     private PlayerActionListener actionListener;
+    private AttackRunnable attackRunnable;
     public int x = 0;
     public int y = 0;
     private int w = 90;
@@ -20,6 +21,7 @@ public class Player {
     public Player() {
         this.id = this.hashCode();
         this.connector = ClientConnector.getInstance();
+        this.attackRunnable = new AttackRunnable(this);
     }
 
     public Runnable getActionHandler(BufferedReader in) {

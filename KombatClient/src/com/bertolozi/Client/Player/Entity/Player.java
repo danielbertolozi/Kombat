@@ -42,6 +42,7 @@ public class Player {
     }
 
     public void attack() {
-        attackRunnable.run();
+        Thread attackThread = new Thread(attackRunnable);
+        attackThread.start();
     }
 }
