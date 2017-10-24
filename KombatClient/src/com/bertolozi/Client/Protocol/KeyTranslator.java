@@ -9,6 +9,7 @@ public abstract class KeyTranslator {
         put(KeyEvent.VK_LEFT, "PR_L");
         put(KeyEvent.VK_UP, "PR_U");
         put(KeyEvent.VK_DOWN, "PR_D");
+        put(KeyEvent.VK_SPACE, "PR_A");
     }};
 
     private static HashMap<Integer, String> releaseKeyToCmd = new HashMap<Integer, String>() {{
@@ -16,6 +17,7 @@ public abstract class KeyTranslator {
         put(KeyEvent.VK_LEFT, "RE_L");
         put(KeyEvent.VK_UP, "RE_U");
         put(KeyEvent.VK_DOWN, "RE_D");
+        put(KeyEvent.VK_SPACE, "RE_A");
     }};
 
     public static String translatePressEvent(Integer event) {

@@ -7,15 +7,15 @@ public abstract class MessageTranslator {
     }
 
     public static String newPlayer(int id, int x, int y) {
-        return "NEW_" + movement(id, x, y);
+        return "NEW_" + movement(id, x, y, false);
     }
 
     public static String delete(int id) {
         return "DEL_" + id;
     }
 
-    public static String movement(int id, int x, int y) {
-        return id + "_" + x + "_" + y;
+    public static String movement(int id, int x, int y, boolean attack) {
+        return id + "_" + x + "_" + y + "_" + (attack ? 1 : 0);
     }
 
     public static boolean isDeletion(String message) {

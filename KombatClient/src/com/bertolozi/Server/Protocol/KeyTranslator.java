@@ -8,6 +8,7 @@ public abstract class KeyTranslator {
         put("PR_L", "LEFT");
         put("PR_U", "UP");
         put("PR_D", "DOWN");
+        put("PR_A", "ATTACK");
     }};
 
     private static HashMap<String, String> releaseCmdToDirection = new HashMap<String, String>() {{
@@ -15,6 +16,7 @@ public abstract class KeyTranslator {
         put("RE_L", "LEFT");
         put("RE_U", "UP");
         put("RE_D", "DOWN");
+        put("RE_A", "ATTACK");
     }};
 
     public static String getDirectionForPress(String command) {
