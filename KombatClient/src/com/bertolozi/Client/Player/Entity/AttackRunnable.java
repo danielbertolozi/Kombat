@@ -12,7 +12,7 @@ public class AttackRunnable implements Runnable {
         player.setAttack(true);
         player.character.setAttackMode(true);
         try {
-            Thread.sleep(500);
+            Thread.sleep(300);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
