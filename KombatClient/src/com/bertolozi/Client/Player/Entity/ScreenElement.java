@@ -13,13 +13,13 @@ public class ScreenElement extends JLabel {
     private ImageIcon attackRight = getPlayerImageFrom("/Players/attack_r.gif");
     private final int PLAYER_WIDTH = 88;
     private final int PLAYER_HEIGHT = 127;
-    private PlayerDirection direction;
+    private PlayerDirections direction;
     private boolean attacking;
 
     void setup() {
         setText("12");
         move();
-        direction = PlayerDirection.RIGHT;
+        direction = PlayerDirections.RIGHT;
     }
 
     private void move() {
@@ -31,10 +31,10 @@ public class ScreenElement extends JLabel {
             return;
         }
         if (this.x > x) {
-            direction = PlayerDirection.LEFT;
+            direction = PlayerDirections.LEFT;
         }
         else {
-            direction = PlayerDirection.RIGHT;
+            direction = PlayerDirections.RIGHT;
         }
         updateIcon();
     }
@@ -53,14 +53,14 @@ public class ScreenElement extends JLabel {
 
     private void updateIcon() {
         if (attacking) {
-            if (direction == PlayerDirection.LEFT) {
+            if (direction == PlayerDirections.LEFT) {
                 setAttackingIconLeft();
                 return;
             }
             setAttackingIconRight();
             return;
         }
-        if (direction == PlayerDirection.LEFT) {
+        if (direction == PlayerDirections.LEFT) {
             setWalkingIconLeft();
             return;
         }
