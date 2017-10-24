@@ -59,9 +59,12 @@ class ClientService {
             return;
         }
 
-        int[] coord = MessageTranslator.getCoordinates(message);
+        int[] actions = MessageTranslator.getCoordinates(message);
 
-        currentPlayer.move(coord[0], coord[1]);
+        currentPlayer.move(actions[0], actions[1]);
+        if (actions[2] == 1) { // determine where current player is attacking; consider as a binary
+            currentPlayer.attack();
+        }
     }
 
     int getConnectionPort(int defaultPort) {

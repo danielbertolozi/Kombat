@@ -27,7 +27,8 @@ public abstract class MessageTranslator {
         String data[] = message.split("_");
         int x = Integer.parseInt(data[1]);
         int y = Integer.parseInt(data[2]);
-        return new int[] {x, y};
+        int attack = Integer.parseInt(data[3]);
+        return new int[] {x, y, attack};
     }
 
     public static boolean isDeletion(String serverInput) {

@@ -17,6 +17,7 @@ public class PlayerMovementHandler extends Thread {
         put("LEFT", false);
         put("UP", false);
         put("DOWN", false);
+        put("ATTACK", false);
     }};
 
     PlayerMovementHandler(BufferedReader in, Player player) {
@@ -32,14 +33,14 @@ public class PlayerMovementHandler extends Thread {
                 if (MessageTranslator.isDeletion(message)) {
                     player.disconnect();
                 }
-                movePlayerByCommand(message);
+                playerActionByCommand(message);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void movePlayerByCommand(String message) {
+    private void playerActionByCommand(String message) {
         String direction = KeyTranslator.getDirectionForPress(message);
         if (direction == null) {
             direction = KeyTranslator.getDirectionForRelease(message);

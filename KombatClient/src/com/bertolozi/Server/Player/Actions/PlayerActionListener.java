@@ -27,7 +27,7 @@ public class PlayerActionListener extends Thread {
                 e.printStackTrace();
             }
             move(player);
-            PlayerService.syncMovement(player.getId(), player.x, player.y);
+            PlayerService.syncMovement(player.getId(), player.x, player.y, player.isAttack());
         }
     }
 
@@ -43,6 +43,9 @@ public class PlayerActionListener extends Thread {
         }
         if (movementHandler.get("UP")) {
             player.y -= SPEED;
+        }
+        if (movementHandler.get("ATTACK")) {
+            player.attack();
         }
     }
 
