@@ -21,11 +21,7 @@ public class CollisionDetectionService extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            try {
-                detect();
-            } catch (PlayerNotFoundException e) {
-                // no need to do shit in here
-            }
+            detect();
         }
     }
 
