@@ -1,5 +1,6 @@
 package com.bertolozi.Server.Connection;
 
+import com.bertolozi.Server.Exceptions.PlayerNotFoundException;
 import com.bertolozi.Server.Protocol.MessageTranslator;
 import com.bertolozi.Server.Player.Entity.Player;
 
@@ -39,7 +40,10 @@ public class ClientConnector {
         synchronizePlayers(player, out);
     }
 
-    public Collection<Player> getAllPlayers() {
+    public Collection<Player> getAllPlayers() throws PlayerNotFoundException {
+        if (instance.playerHashMap.isEmpty()) {
+            throw new PlayerNotFoundException();
+        }
         return instance.playerHashMap.values();
     }
 

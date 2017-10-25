@@ -4,6 +4,8 @@ import com.bertolozi.Server.Exceptions.PlayerNotFoundException;
 import com.bertolozi.Server.Connection.ClientConnector;
 import com.bertolozi.Server.Player.Entity.Player;
 
+import java.util.Collection;
+
 public class CollisionDetectionService extends Thread {
     private ClientConnector clientConnector;
 
@@ -27,11 +29,15 @@ public class CollisionDetectionService extends Thread {
         }
     }
 
-    public void detect() throws PlayerNotFoundException {
-        Player[] players = (Player[]) clientConnector.getAllPlayers().toArray();
-        if (players.length == 0) {
-            throw new PlayerNotFoundException();
+    private void detect() {
+        Collection<Player> playerCollection;
+        try {
+            playerCollection = clientConnector.getAllPlayers();
+        } catch (PlayerNotFoundException e) {
+            return;
         }
+        Player[] players = new Player[];
+        players = playerCollection.toArray(players);
         int i, j;
         for (i = 0; i < players.length / 2; i++) {
             for (j = players.length - 1; j > players.length / 2; j--) {
