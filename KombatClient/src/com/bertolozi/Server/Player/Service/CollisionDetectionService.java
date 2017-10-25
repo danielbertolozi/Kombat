@@ -34,12 +34,18 @@ public class CollisionDetectionService extends Thread {
         }
         Player[] players = new Player[] {};
         players = playerCollection.toArray(players);
+        if (players.length <= 1) {
+            return; // there can't be a collision between someone and himself
+        }
         int i, j;
         for (i = 0; i < players.length / 2; i++) {
-            for (j = players.length - 1; j > players.length / 2; j--) {
-                if (isColliding(players[i], players[j])) {
-                    System.out.println("Collision between " + players[i].getId() + " and " + players[j].getId());
-                }
+            j = players.length - 1 - i;
+            if (i == j) {
+                continue;
+            }
+            if (isColliding(players[i], players[j])) {
+                // TODO handle attacks
+                System.out.println("Collision between " + players[i].getId() + " and " + players[j].getId());
             }
         }
     }
@@ -51,7 +57,7 @@ public class CollisionDetectionService extends Thread {
         int[] targetWidth = target.getPlayerWidthRange();
         boolean yIntersection = checkForIntersection(candidateHeight, targetHeight);
         boolean xIntersection = checkForIntersection(candidateWidth, targetWidth);
-        return yIntersection || xIntersection;
+        return yIntersection && xIntersection;
     }
 
     private boolean checkForIntersection(int[] candidateRange, int[] targetRange) {
