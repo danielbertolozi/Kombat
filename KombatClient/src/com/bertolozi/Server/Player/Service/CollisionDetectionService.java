@@ -32,7 +32,7 @@ public class CollisionDetectionService extends Thread {
         } catch (PlayerNotFoundException e) {
             return;
         }
-        Player[] players = new Player[];
+        Player[] players = new Player[] {};
         players = playerCollection.toArray(players);
         int i, j;
         for (i = 0; i < players.length / 2; i++) {
