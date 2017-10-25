@@ -1,5 +1,7 @@
 package com.bertolozi.Client.Player.Entity;
 
+import com.bertolozi.Client.Player.Actions.PlayerDirections;
+
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -43,7 +45,7 @@ public class ScreenElement extends JLabel {
         updateIcon();
     }
 
-    void setAttackMode(boolean isAttack) {
+    public void setAttackMode(boolean isAttack) {
         attacking = isAttack;
     }
 

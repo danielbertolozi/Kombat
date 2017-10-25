@@ -1,4 +1,4 @@
-package com.bertolozi.Client.Player.Entity;
+package com.bertolozi.Client.Player.Actions;
 
 public enum PlayerDirections {
     RIGHT, LEFT

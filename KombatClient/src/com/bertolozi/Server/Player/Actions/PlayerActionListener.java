@@ -32,19 +32,19 @@ public class PlayerActionListener extends Thread {
     }
 
     private void move(Player player) {
-        if (movementHandler.get("RIGHT")) {
+        if (movementHandler.get(PlayerActions.RIGHT)) {
             player.x += SPEED;
         }
-        if (movementHandler.get("LEFT")) {
+        if (movementHandler.get(PlayerActions.LEFT)) {
             player.x -= SPEED;
         }
-        if (movementHandler.get("DOWN")) {
+        if (movementHandler.get(PlayerActions.DOWN)) {
             player.y += SPEED;
         }
-        if (movementHandler.get("UP")) {
+        if (movementHandler.get(PlayerActions.UP)) {
             player.y -= SPEED;
         }
-        if (movementHandler.get("ATTACK")) {
+        if (movementHandler.get(PlayerActions.ATTACK)) {
             player.attack();
         }
     }

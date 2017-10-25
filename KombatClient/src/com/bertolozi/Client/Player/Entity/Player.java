@@ -1,5 +1,7 @@
 package com.bertolozi.Client.Player.Entity;
 
+import com.bertolozi.Client.Player.Actions.AttackRunnable;
+
 public class Player {
     public ScreenElement character = new ScreenElement();
     private int id;
