@@ -1,6 +1,6 @@
 package com.bertolozi.Server.Player.Service;
 
-import com.bertolozi.Client.Exceptions.PlayerNotFoundException;
+import com.bertolozi.Server.Exceptions.PlayerNotFoundException;
 import com.bertolozi.Server.Connection.ClientConnector;
 import com.bertolozi.Server.Player.Entity.Player;
 
