@@ -3,6 +3,7 @@ package com.bertolozi.Server.Application;
 import com.bertolozi.Server.Connection.ClientConnector;
 import com.bertolozi.Server.Connection.PortDispatcher;
 import com.bertolozi.Server.Player.Entity.Player;
+import com.bertolozi.Server.Player.Service.CollisionDetectionService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.net.Socket;
 public class Server {
     private final int PORT = 8880;
     private ClientConnector clientConnector = ClientConnector.getInstance();
+    private CollisionDetectionService collisionDetection = new CollisionDetectionService();
     private PortDispatcher portDispatcher = new PortDispatcher(PORT);
 
     private Server() throws IOException {
@@ -26,6 +28,7 @@ public class Server {
     }
 
     private void waitForPlayer() {
+        collisionDetection.start();
         while (true) {
             try {
                 Socket connection = portDispatcher.dispatchIncomingConnection();
