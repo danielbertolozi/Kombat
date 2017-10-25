@@ -1,9 +1,11 @@
 package com.bertolozi.Server.Connection;
 
+import com.bertolozi.Server.Exceptions.PlayerNotFoundException;
 import com.bertolozi.Server.Protocol.MessageTranslator;
 import com.bertolozi.Server.Player.Entity.Player;
 
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class ClientConnector {
@@ -36,6 +38,13 @@ public class ClientConnector {
         instance.playerHashMap.put(key, player);
         instance.writerHashMap.put(key, out);
         synchronizePlayers(player, out);
+    }
+
+    public Collection<Player> getAllPlayers() throws PlayerNotFoundException {
+        if (instance.playerHashMap.isEmpty()) {
+            throw new PlayerNotFoundException();
+        }
+        return instance.playerHashMap.values();
     }
 
     private void synchronizePlayers(Player player, PrintWriter out) {
