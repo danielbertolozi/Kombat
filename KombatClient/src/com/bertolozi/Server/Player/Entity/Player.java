@@ -40,6 +40,16 @@ public class Player {
         connector.removePlayer(this);
     }
 
+    public int[] getPlayerHeightRange() {
+        int maxHeight = this.h + this.y;
+        return new int[] {this.y, maxHeight};
+    }
+
+    public int[] getPlayerWidthRange() {
+        int maxWidth = this.w + this.x;
+        return new int[] {this.x, maxWidth};
+    }
+
     public void addDamage(int damage) {
         health -= damage;
     }
