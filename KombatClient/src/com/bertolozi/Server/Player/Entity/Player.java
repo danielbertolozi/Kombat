@@ -69,5 +69,6 @@ public class Player {
 
     public void setAttack(boolean attack) {
         this.attack = attack;
+        this.w = this.attack ? 140 : 90;
     }
 }
