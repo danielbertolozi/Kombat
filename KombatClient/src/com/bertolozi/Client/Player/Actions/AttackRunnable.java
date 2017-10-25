@@ -1,9 +1,11 @@
-package com.bertolozi.Client.Player.Entity;
+package com.bertolozi.Client.Player.Actions;
+
+import com.bertolozi.Client.Player.Entity.Player;
 
 public class AttackRunnable implements Runnable {
     private final Player player;
 
-    AttackRunnable(Player player) {
+    public AttackRunnable(Player player) {
         this.player = player;
     }
 

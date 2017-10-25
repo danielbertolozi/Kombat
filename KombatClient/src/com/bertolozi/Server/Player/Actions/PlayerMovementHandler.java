@@ -12,12 +12,12 @@ public class PlayerMovementHandler extends Thread {
     private final Player player;
     private BufferedReader in;
 
-    private HashMap<String, Boolean> movementMap = new HashMap<String, Boolean>() {{
-        put("RIGHT", false);
-        put("LEFT", false);
-        put("UP", false);
-        put("DOWN", false);
-        put("ATTACK", false);
+    private HashMap<PlayerActions, Boolean> movementMap = new HashMap<PlayerActions, Boolean>() {{
+        put(PlayerActions.RIGHT, false);
+        put(PlayerActions.LEFT, false);
+        put(PlayerActions.UP, false);
+        put(PlayerActions.DOWN, false);
+        put(PlayerActions.ATTACK, false);
     }};
 
     PlayerMovementHandler(BufferedReader in, Player player) {
@@ -45,14 +45,14 @@ public class PlayerMovementHandler extends Thread {
         if (direction == null) {
             direction = KeyTranslator.getDirectionForRelease(message);
             if (direction != null) {
-                movementMap.put(direction, false);
+                movementMap.put(PlayerActions.valueOf(direction), false);
             }
             return;
         }
-        movementMap.put(direction, true);
+        movementMap.put(PlayerActions.valueOf(direction), true);
     }
 
-    boolean get(String direction) {
+    boolean get(PlayerActions direction) {
         return this.movementMap.get(direction);
     }
 }
