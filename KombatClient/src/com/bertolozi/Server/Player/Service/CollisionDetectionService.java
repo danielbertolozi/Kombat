@@ -4,11 +4,27 @@ import com.bertolozi.Client.Exceptions.PlayerNotFoundException;
 import com.bertolozi.Server.Connection.ClientConnector;
 import com.bertolozi.Server.Player.Entity.Player;
 
-public class CollisionDetectionService {
+public class CollisionDetectionService extends Thread {
     private ClientConnector clientConnector;
 
     public CollisionDetectionService() {
         clientConnector = ClientConnector.getInstance();
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                detect();
+            } catch (PlayerNotFoundException e) {
+                // no need to do shit in here
+            }
+        }
     }
 
     public void detect() throws PlayerNotFoundException {
